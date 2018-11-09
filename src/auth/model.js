@@ -1,6 +1,8 @@
 'use strict';
 
 import mongoose from 'mongoose';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 const userSchema = new mongoose.Schema({
   username: {type: String, required: true, unique: true},
@@ -44,6 +46,7 @@ userSchema.statics.authenticateToken = function(token) {
 // Compare a plain text password against the hashed one we have saved
 userSchema.methods.comparePassword = function(password) {
   return bcrypt.compare(password, this.password);
+  .then( valid => valid ? this : null );
 };
 
 // Generate a JWT from the user id and a secret
